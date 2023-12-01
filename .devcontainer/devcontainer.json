@@ -1,0 +1,39 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.245.2/containers/ubuntu
+{
+  "name": "weewx",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "remoteUser": "vscode",
+  "mounts": [
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.aws,target=/home/vscode/.aws,type=bind,consistency=cached",
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.act,target=/home/vscode/.act,type=bind,consistency=cached",
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.pip,target=/home/vscode/.pip,type=bind,consistency=cached",
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/bin,target=/home/vscode/bin,type=bind,consistency=cached"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+		"ms-python.python",
+		"donjayamanne.python-extension-pack",
+		"njpwerner.autodocstring",
+		"Boto3typed.boto3-ide",
+		"esbenp.prettier-vscode",
+		"eamodio.gitlens",
+		"ms-python.autopep8",
+		"HashiCorp.terraform",
+		"Github.copilot",
+		"snyk-security.snyk-vulnerability-scanner"
+	]
+    }
+  },
+  "features": {
+    "docker-from-docker": {
+      "version": "latest",
+      "moby": true,
+      "dockerDashComposeVersion": "v1"
+    }
+  }
+}

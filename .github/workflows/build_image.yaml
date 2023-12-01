@@ -1,0 +1,78 @@
+# Name of the GitHub Actions workflow
+name: build-image
+
+# Triggers for the workflow: manual dispatch and any push to the 'develop' branch
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+# Environment variable for the Docker repository
+env:
+  REPO: docker.io/mmxca/weewx
+
+# Define the jobs in the workflow
+jobs:
+  build-multi-image:
+
+    # Specify the runner for the job
+    runs-on: [ Standard ]
+
+    # Default settings for the steps in the job
+    defaults:
+      run:
+        shell: bash
+        working-directory: .
+
+    # Define the steps in the job
+    steps:
+    
+      # Checkout the code
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Set up Node.js version 20
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      # Add support for more platforms with QEMU
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      # Add support for multi-platform builds with buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Get the short SHA of the current commit
+      - name: Retrieve Short SHA
+        uses: benjlevesque/short-sha@v2.2
+        id: short-sha
+        with:
+          length: 8
+
+      # Log into the Artifactory Docker Registry
+      - name: Log in to Artifactory Docker Registry
+        run: |
+          docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }} ${{ secrets.DOCKER_HOST }}        
+
+      # Create a builder instance
+      - name: Create Builder Workspace
+        run: |
+          # Create a builder instance
+          docker buildx create --name docker-builder
+
+          # Use the builder instance
+          docker buildx use docker-builder
+
+      # Build & Deploy the Multi-Architecture Docker images
+      - name: Build & Deploy the Docker images
+        env:
+          REPO: ${{ env.REPO }}
+          TAG: ${{ steps.short-sha.outputs.sha }}
+        run: |
+          # Build the multi-architecture image
+          docker buildx build --no-cache --push \
+            --platform linux/amd64,linux/arm64/v8 \
+            -t $REPO:latest -t $REPO:$TAG .

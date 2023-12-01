@@ -1,0 +1,8 @@
+# Please also use <COMPANY> CODEOWNERS file as reference for domain team
+# See https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners
+
+####################
+# Governance Team
+####################
+
+* @vertexinc/cloud-governance-engineers
