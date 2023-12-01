@@ -17,7 +17,7 @@ jobs:
   build-multi-image:
 
     # Specify the runner for the job
-    runs-on: [ Standard ]
+    runs-on: [ ubuntu-latest ]
 
     # Default settings for the steps in the job
     defaults:
